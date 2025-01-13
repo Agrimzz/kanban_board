@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { ColumnProps } from "../types"
-import { useSortable } from "@dnd-kit/sortable"
+import { SortableContext, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import TaskCard from "./TaskCard"
 
@@ -15,6 +15,9 @@ const Column = (props: ColumnProps) => {
     updateTask,
   } = props
   const [isEditting, setIsEditting] = useState(false)
+
+  const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks])
+
   const {
     setNodeRef,
     attributes,
@@ -83,14 +86,16 @@ const Column = (props: ColumnProps) => {
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {tasks?.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            deleteTask={deleteTask}
-            updateTask={updateTask}
-          />
-        ))}
+        <SortableContext items={taskIds}>
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              deleteTask={deleteTask}
+              updateTask={updateTask}
+            />
+          ))}
+        </SortableContext>
       </div>
 
       <div className="flex gap-2">

@@ -8,7 +8,7 @@ export type ColumnProps = {
   deleteColumn: (id: string) => void
   updateColumn: (id: string, title: string) => void
   createTask: (columnId: string) => void
-  tasks?: TaskType[]
+  tasks: TaskType[]
   deleteTask: (taskId: string) => void
   updateTask: (taskId: string, content: string) => void
 }
