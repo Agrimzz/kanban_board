@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { ColumnType, TaskType } from "../types"
 import Column from "./Column"
 import {
@@ -14,13 +14,22 @@ import {
 import { arrayMove, SortableContext } from "@dnd-kit/sortable"
 import { createPortal } from "react-dom"
 import TaskCard from "./TaskCard"
+import { saveToLocalStorage } from "../utils/utils"
 
 const KanbanBoard = () => {
-  const [columns, setColumns] = useState<ColumnType[]>([])
+  const [columns, setColumns] = useState<ColumnType[]>(() =>
+    localStorage.getItem("kanban_columns")
+      ? JSON.parse(localStorage.getItem("kanban_columns")!)
+      : []
+  )
   const columnsId = useMemo(() => columns.map((column) => column.id), [columns])
   const [activeColumn, setActiveColumn] = useState<ColumnType | null>(null)
 
-  const [tasks, setTasks] = useState<TaskType[]>([])
+  const [tasks, setTasks] = useState<TaskType[]>(() =>
+    localStorage.getItem("kanban_tasks")
+      ? JSON.parse(localStorage.getItem("kanban_tasks")!)
+      : []
+  )
   const [activeTask, setActiveTask] = useState<TaskType | null>(null)
 
   const sensors = useSensors(
@@ -30,6 +39,18 @@ const KanbanBoard = () => {
       },
     })
   )
+
+  useEffect(() => {
+    const savedColumns = localStorage.getItem("kanban_columns")
+    const savedTasks = localStorage.getItem("kanban_tasks")
+
+    if (savedColumns) setColumns(JSON.parse(savedColumns))
+    if (savedTasks) setTasks(JSON.parse(savedTasks))
+  }, [])
+
+  useEffect(() => {
+    saveToLocalStorage(columns, tasks)
+  }, [columns, tasks])
 
   function createNewColumn() {
     const newColumn: ColumnType = {
@@ -164,7 +185,7 @@ const KanbanBoard = () => {
         <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto">
           <h1 className="text-primary text-3xl font-bold">Kanban Board</h1>
           <button
-            className="text-primary px-4 py-2 rounded-md border-[1px] border-primary ring-primary/80 hover:ring-2"
+            className="text-background bg-primary px-4 py-2 rounded-md border-[1px] border-primary ring-primary/80 hover:ring-2"
             onClick={createNewColumn}
           >
             Add Column

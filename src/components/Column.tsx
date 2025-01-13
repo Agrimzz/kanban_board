@@ -3,17 +3,16 @@ import { ColumnProps } from "../types"
 import { SortableContext, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import TaskCard from "./TaskCard"
-
-const Column = (props: ColumnProps) => {
-  const {
-    column,
-    deleteColumn,
-    updateColumn,
-    createTask,
-    tasks,
-    deleteTask,
-    updateTask,
-  } = props
+import { CirclePlus, Trash2 } from "lucide-react"
+const Column = ({
+  column,
+  deleteColumn,
+  updateColumn,
+  createTask,
+  tasks,
+  deleteTask,
+  updateTask,
+}: ColumnProps) => {
   const [isEditting, setIsEditting] = useState(false)
 
   const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks])
@@ -41,7 +40,7 @@ const Column = (props: ColumnProps) => {
 
   if (isDragging) {
     return (
-      <div className="bg-background rounded-md  min-h-[500px] flex flex-col  border-[1px] border-red-400"></div>
+      <div className="bg-background rounded-md  min-h-[500px] flex flex-col  border-[1px] border-primary opacity-50"></div>
     )
   }
 
@@ -58,9 +57,14 @@ const Column = (props: ColumnProps) => {
         onClick={() => setIsEditting(true)}
       >
         {!isEditting && (
-          <h2 className="text-foreground/50 text-base font-semibold">
-            {column.title}
-          </h2>
+          <div className="flex items-center gap-1">
+            <h2 className="text-foreground/50 text-base font-semibold">
+              {column.title}
+            </h2>
+            <div className="bg-primary rounded-full text-background text-xs w-[20px] h-[20px] flex items-center justify-center">
+              {tasks.length}
+            </div>
+          </div>
         )}
 
         {isEditting && (
@@ -78,11 +82,12 @@ const Column = (props: ColumnProps) => {
             }}
           />
         )}
+
         <button
-          className="bg-red-400 text-white p-2"
+          className="bg-red-400 text-white p-1 rounded-md"
           onClick={() => deleteColumn(column.id)}
         >
-          Delete
+          <Trash2 />
         </button>
       </div>
       <div className="flex flex-col gap-2">
@@ -98,16 +103,15 @@ const Column = (props: ColumnProps) => {
         </SortableContext>
       </div>
 
-      <div className="flex gap-2">
-        <button
-          className="text-sm font-semibold text-foreground"
-          onClick={() => {
-            createTask(column.id)
-          }}
-        >
-          Add task
-        </button>
-      </div>
+      <button
+        className="text-sm font-semibold flex gap-2 text-foreground items-center"
+        onClick={() => {
+          createTask(column.id)
+        }}
+      >
+        <CirclePlus />
+        Add task
+      </button>
     </div>
   )
 }

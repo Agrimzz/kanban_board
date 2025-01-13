@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { TaskProps } from "../types"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { Trash2 } from "lucide-react"
 
 const TaskCard = ({ task, deleteTask, updateTask }: TaskProps) => {
   const [mouseOver, setMouseOver] = useState(false)
@@ -85,10 +86,10 @@ const TaskCard = ({ task, deleteTask, updateTask }: TaskProps) => {
       </p>
       {mouseOver && (
         <button
-          className="bg-red-400 text-xs text-white p-1 absolute top-2 right-2"
+          className="text-xs text-red-500 p-2 absolute top-2 right-2"
           onClick={() => deleteTask(task.id)}
         >
-          D
+          <Trash2 size={16} />
         </button>
       )}
     </div>
