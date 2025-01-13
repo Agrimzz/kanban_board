@@ -7,3 +7,17 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.light {
+  --background: 255, 255, 255;
+  --foreground: 0, 0, 0;
+  --primary: 0, 213, 99;
+  background: #eee;
+}
+
+.dark {
+  --background: 0, 0, 0;
+  --foreground: 255, 255, 255;
+  --primary: 0, 150, 70;
+  background: rgba(var(--background), 0.9);
+}
