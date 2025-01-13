@@ -6,4 +6,5 @@ export type ColumnType = {
 export interface ColumnProps {
   column: ColumnType
   deleteColumn: (id: string) => void
+  updateColumn: (id: string, title: string) => void
 }

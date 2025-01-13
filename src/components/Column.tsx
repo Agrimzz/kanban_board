@@ -1,11 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { ColumnProps } from "../types"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 
 const Column = (props: ColumnProps) => {
-  const { column, deleteColumn } = props
-
+  const { column, deleteColumn, updateColumn } = props
+  const [isEditting, setIsEditting] = useState(false)
   const {
     setNodeRef,
     attributes,
@@ -19,6 +19,7 @@ const Column = (props: ColumnProps) => {
       type: "Column",
       column,
     },
+    disabled: isEditting,
   })
 
   const style = {
@@ -42,8 +43,27 @@ const Column = (props: ColumnProps) => {
         className="bg-primary p-4 flex justify-between items-center"
         {...attributes}
         {...listeners}
+        onClick={() => setIsEditting(true)}
       >
-        <h2 className="text-background font-semibold">{column.title}</h2>
+        {!isEditting && (
+          <h2 className="text-background font-semibold">{column.title}</h2>
+        )}
+
+        {isEditting && (
+          <input
+            className="text-foreground font-semibold outline-none bg-transparent"
+            autoFocus
+            value={column.title}
+            onChange={(e) => {
+              updateColumn(column.id, e.target.value)
+            }}
+            onBlur={() => setIsEditting(false)}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter") return
+              setIsEditting(false)
+            }}
+          />
+        )}
         <button
           className="bg-red-400 text-white p-2"
           onClick={() => deleteColumn(column.id)}
