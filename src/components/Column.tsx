@@ -2,9 +2,18 @@ import React, { useState } from "react"
 import { ColumnProps } from "../types"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import TaskCard from "./TaskCard"
 
 const Column = (props: ColumnProps) => {
-  const { column, deleteColumn, updateColumn } = props
+  const {
+    column,
+    deleteColumn,
+    updateColumn,
+    createTask,
+    tasks,
+    deleteTask,
+    updateTask,
+  } = props
   const [isEditting, setIsEditting] = useState(false)
   const {
     setNodeRef,
@@ -35,18 +44,20 @@ const Column = (props: ColumnProps) => {
 
   return (
     <div
-      className="bg-background rounded-md  min-h-[500px] flex flex-col"
+      className="min-h-[500px] flex flex-col gap-4"
       ref={setNodeRef}
       style={style}
     >
       <div
-        className="bg-primary p-4 flex justify-between items-center"
+        className=" flex justify-between items-center"
         {...attributes}
         {...listeners}
         onClick={() => setIsEditting(true)}
       >
         {!isEditting && (
-          <h2 className="text-background font-semibold">{column.title}</h2>
+          <h2 className="text-foreground/50 text-base font-semibold">
+            {column.title}
+          </h2>
         )}
 
         {isEditting && (
@@ -69,6 +80,27 @@ const Column = (props: ColumnProps) => {
           onClick={() => deleteColumn(column.id)}
         >
           Delete
+        </button>
+      </div>
+      <div className="flex flex-col gap-2">
+        {tasks?.map((task) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            deleteTask={deleteTask}
+            updateTask={updateTask}
+          />
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          className="text-sm font-semibold text-foreground"
+          onClick={() => {
+            createTask(column.id)
+          }}
+        >
+          Add task
         </button>
       </div>
     </div>
