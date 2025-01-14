@@ -314,6 +314,11 @@ const KanbanBoard = () => {
             ))}
           </SortableContext>
         </div>
+        {sortedColumns.length === 0 && (
+          <div className="text-foreground/60 w-full text-center">
+            No columns found. Please create a new column.
+          </div>
+        )}
         {createPortal(
           <DragOverlay>
             {activeColumn && (
