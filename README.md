@@ -171,5 +171,3 @@ Ensure you have the following installed on your system:
    - Add undo/redo functionality to allow users to undo/redo their actions.
 
 ---
-
-Feel free to explore the repository and contribute by opening issues or submitting pull requests! Happy coding!
