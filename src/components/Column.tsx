@@ -46,19 +46,19 @@ const Column = ({
 
   return (
     <div
-      className="min-h-[500px] flex flex-col gap-4"
+      className="min-h-[500px] flex flex-col gap-4 bg-secondary/20 rounded-md overflow-hidden pb-2"
       ref={setNodeRef}
       style={style}
     >
       <div
-        className=" flex justify-between items-center"
+        className=" flex justify-between items-center bg-accent/40 p-2 "
         {...attributes}
         {...listeners}
         onClick={() => setIsEditting(true)}
       >
         {!isEditting && (
           <div className="flex items-center gap-1">
-            <h2 className="text-foreground/50 text-base font-semibold">
+            <h2 className="text-foreground text-base font-semibold">
               {column.title}
             </h2>
             <div className="bg-primary rounded-full text-background text-xs w-[20px] h-[20px] flex items-center justify-center">
@@ -84,13 +84,14 @@ const Column = ({
         )}
 
         <button
-          className="bg-red-400 text-white p-1 rounded-md"
+          className="bg-primary text-background p-1 rounded-md"
           onClick={() => deleteColumn(column.id)}
+          aria-label="Delete Column"
         >
           <Trash2 />
         </button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 px-2">
         <SortableContext items={taskIds}>
           {tasks.map((task) => (
             <TaskCard
@@ -104,7 +105,7 @@ const Column = ({
       </div>
 
       <button
-        className="text-sm font-semibold flex gap-2 text-foreground items-center"
+        className="text-sm font-semibold flex gap-2 text-foreground items-center px-2 pb-2"
         onClick={() => {
           createTask(column.id)
         }}

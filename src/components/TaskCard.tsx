@@ -53,7 +53,7 @@ const TaskCard = ({ task, deleteTask, updateTask }: TaskProps) => {
         style={style}
         {...attributes}
         {...listeners}
-        className="bg-background text-foreground p-2 rounded-md border-[1px] border-gray-400 cursor-grab min-h-[100px] relative"
+        className="bg-background text-foreground p-2 rounded-md border-[1px] border-secondary cursor-grab h-[100px] relative"
       >
         <textarea
           autoFocus
@@ -76,7 +76,7 @@ const TaskCard = ({ task, deleteTask, updateTask }: TaskProps) => {
       style={style}
       {...attributes}
       {...listeners}
-      className="w-full bg-background text-foreground p-2 rounded-md border-[1px] border-gray-400 cursor-grab min-h-[100px] relative"
+      className="w-full bg-accent/20 text-foreground p-2 rounded-md cursor-grab h-[100px] relative"
       onMouseEnter={() => setMouseOver(true)}
       onMouseLeave={() => setMouseOver(false)}
       onClick={toggleEditting}
@@ -86,8 +86,9 @@ const TaskCard = ({ task, deleteTask, updateTask }: TaskProps) => {
       </p>
       {mouseOver && (
         <button
-          className="text-xs text-red-500 p-2 absolute top-2 right-2"
+          className="text-xs text-primary p-2 absolute top-2 right-2"
           onClick={() => deleteTask(task.id)}
+          aria-label="Delete Task"
         >
           <Trash2 size={16} />
         </button>

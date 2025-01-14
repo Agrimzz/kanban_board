@@ -16,6 +16,7 @@ import { createPortal } from "react-dom"
 import TaskCard from "./TaskCard"
 import { saveToLocalStorage } from "../utils/utils"
 import { Search, X } from "lucide-react"
+import ThemeToggler from "./ThemeToggler"
 
 const KanbanBoard = () => {
   const [columns, setColumns] = useState<ColumnType[]>(() =>
@@ -36,6 +37,15 @@ const KanbanBoard = () => {
   const [searchQuery, setSearchQuery] = useState<string>("")
   const [sortOption, setSortOption] = useState<string>("")
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 2,
+      },
+    })
+  )
+
+  //filter tasks
   const filteredTasks = useMemo(() => {
     if (!searchQuery) return tasks
     return tasks.filter((task) =>
@@ -43,10 +53,12 @@ const KanbanBoard = () => {
     )
   }, [tasks, searchQuery])
 
+  //handle search query
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchQuery(e.target.value)
   }
 
+  //sort columns
   const sortedColumns = useMemo(() => {
     const compare = (a: ColumnType, b: ColumnType) => {
       const taskCountA = tasks.filter((task) => task.columnId === a.id).length
@@ -62,21 +74,14 @@ const KanbanBoard = () => {
         case "TaskLowToHigh":
           return taskCountA - taskCountB
         default:
-          return 0 // No sorting
+          return 0
       }
     }
 
     return [...columns].sort(compare)
   }, [columns, tasks, sortOption])
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 2,
-      },
-    })
-  )
-
+  //load columns and tasks from local storage if exists
   useEffect(() => {
     const savedColumns = localStorage.getItem("kanban_columns")
     const savedTasks = localStorage.getItem("kanban_tasks")
@@ -85,10 +90,12 @@ const KanbanBoard = () => {
     if (savedTasks) setTasks(JSON.parse(savedTasks))
   }, [])
 
+  //save tasks and columns to local storage
   useEffect(() => {
     saveToLocalStorage(columns, tasks)
   }, [columns, tasks])
 
+  //columns CRUD
   function createNewColumn() {
     const newColumn: ColumnType = {
       id: Date.now().toString(),
@@ -117,6 +124,7 @@ const KanbanBoard = () => {
     )
   }
 
+  //drag functions
   function onDragStart(event: DragStartEvent) {
     if (event.active.data.current?.type === "Column") {
       setActiveColumn(event.active.data.current.column)
@@ -198,6 +206,7 @@ const KanbanBoard = () => {
     }
   }
 
+  //tasks CRUD
   function createTask(columnId: string) {
     const newTask: TaskType = {
       id: Date.now().toString(),
@@ -228,27 +237,30 @@ const KanbanBoard = () => {
 
   return (
     <div className="w-full min-h-screen ">
-      <div className="w-full bg-background sticky top-0 z-50">
+      <div className="w-full bg-background sticky top-0 z-50 border-b-[1px] border-gray-400">
         <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto">
           <h1 className="text-primary text-3xl font-bold">Kanban Board</h1>
 
-          <button
-            className="text-background bg-primary px-4 py-2 rounded-md border-[1px] border-primary ring-primary/80 hover:ring-2"
-            onClick={createNewColumn}
-          >
-            Add Column
-          </button>
+          <div className="flex gap-2 items-center">
+            <ThemeToggler />
+            <button
+              className="text-background bg-primary px-4 py-2 rounded-md border-[1px] border-primary ring-primary/80 hover:ring-2"
+              onClick={createNewColumn}
+            >
+              Add Column
+            </button>
+          </div>
         </div>
       </div>
-      <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto">
-        <div className="flex gap-2 items-center border-[1px] border-gray-400 rounded-md bg-background p-2 text-foreground">
+      <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto gap-2 flex-wrap">
+        <div className="flex flex-1 gap-2 items-center border-[1px] border-gray-400 rounded-md bg-background p-2 text-foreground">
           <Search />
           <input
             type="text"
             value={searchQuery}
             onChange={handleSearch}
             placeholder="Search tasks..."
-            className="rounded-md outline-none bg-background"
+            className="rounded-md outline-none bg-background flex-1"
           />
           {searchQuery && (
             <button onClick={() => setSearchQuery("")}>

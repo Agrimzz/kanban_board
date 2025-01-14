@@ -9,15 +9,30 @@
 }
 
 .light {
-  --background: 255, 255, 255;
-  --foreground: 0, 0, 0;
-  --primary: 0, 213, 99;
-  background: #eee;
+  --background: 228, 246, 244;
+  --foreground: 13, 28, 26;
+  --primary: 27, 116, 105;
+  --secondary: 122, 235, 224;
+  --accent: 15, 204, 182;
+  background: rgba(var(--background), 1);
 }
 
 .dark {
-  --background: 0, 0, 0;
-  --foreground: 255, 255, 255;
-  --primary: 0, 150, 70;
-  background: rgba(var(--background), 0.9);
+  --background: 9, 27, 25;
+  --foreground: 227, 242, 240;
+  --primary: 139, 228, 218;
+  --secondary: 20, 133, 122;
+  --accent: 51, 240, 218;
+  background: rgba(var(--background), 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 9, 27, 25;
+    --foreground: 227, 242, 240;
+    --primary: 139, 228, 218;
+    --secondary: 20, 133, 122;
+    --accent: 51, 240, 218;
+    background: rgba(var(--background), 0.9);
+  }
 }
