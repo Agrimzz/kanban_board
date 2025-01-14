@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { TaskProps } from "../types"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"

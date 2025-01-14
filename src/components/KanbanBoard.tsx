@@ -283,10 +283,11 @@ const KanbanBoard = () => {
           </select>
         </div>
       </div>
-      <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto">
+      <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto items-baseline">
         <h4 className="text-xl font-semibold text-foreground">
           {searchQuery ? `Search results for "${searchQuery}"` : "Your Board"}
         </h4>
+        <p className="text-foreground/60">{columns.length} columns</p>
       </div>
       <DndContext
         sensors={sensors}

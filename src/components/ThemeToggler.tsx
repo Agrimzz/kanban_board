@@ -1,5 +1,5 @@
 import { Moon, Sun } from "lucide-react"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 const ThemeToggler = () => {
   const [theme, setTheme] = useState(() => {
