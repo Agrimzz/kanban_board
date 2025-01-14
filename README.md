@@ -4,11 +4,18 @@ A Kanban board web application built with React, TypeScript, and modern drag-and
 
 ## Table of Contents
 
+- [Demo](#demo)
 - [Setup Instructions](#setup-instructions)
 - [Features](#features)
 - [Technology Choices and Rationale](#technology-choices-and-rationale)
 - [Known Limitations and Trade-offs](#known-limitations-and-trade-offs)
 - [Future Improvements](#future-improvements)
+
+---
+
+## Demo
+
+Check out the live demo: [Kanban Board Demo](https://kanban-board-ws37.vercel.app)
 
 ---
 
