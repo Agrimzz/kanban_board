@@ -52,7 +52,7 @@ Ensure you have the following installed on your system:
    yarn start
    ```
 
-4. Open the application in your browser at `http://localhost:3000`.
+4. Open the application in your browser at `http://localhost:5173`.
 
 ---
 
