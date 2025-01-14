@@ -15,6 +15,7 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable"
 import { createPortal } from "react-dom"
 import TaskCard from "./TaskCard"
 import { saveToLocalStorage } from "../utils/utils"
+import { Search, X } from "lucide-react"
 
 const KanbanBoard = () => {
   const [columns, setColumns] = useState<ColumnType[]>(() =>
@@ -31,6 +32,42 @@ const KanbanBoard = () => {
       : []
   )
   const [activeTask, setActiveTask] = useState<TaskType | null>(null)
+
+  const [searchQuery, setSearchQuery] = useState<string>("")
+  const [sortOption, setSortOption] = useState<string>("")
+
+  const filteredTasks = useMemo(() => {
+    if (!searchQuery) return tasks
+    return tasks.filter((task) =>
+      task.content.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [tasks, searchQuery])
+
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchQuery(e.target.value)
+  }
+
+  const sortedColumns = useMemo(() => {
+    const compare = (a: ColumnType, b: ColumnType) => {
+      const taskCountA = tasks.filter((task) => task.columnId === a.id).length
+      const taskCountB = tasks.filter((task) => task.columnId === b.id).length
+
+      switch (sortOption) {
+        case "AtoZ":
+          return a.title.localeCompare(b.title)
+        case "ZtoA":
+          return b.title.localeCompare(a.title)
+        case "TaskHighToLow":
+          return taskCountB - taskCountA
+        case "TaskLowToHigh":
+          return taskCountA - taskCountB
+        default:
+          return 0 // No sorting
+      }
+    }
+
+    return [...columns].sort(compare)
+  }, [columns, tasks, sortOption])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -145,9 +182,19 @@ const KanbanBoard = () => {
     const isOverAColumn = over.data.current?.type === "Column"
 
     if (isActiveATask && isOverAColumn) {
-      const activeIndex = tasks.findIndex((task) => task.id === activeId)
-      tasks[activeIndex].columnId = String(overId)
-      return arrayMove(tasks, activeIndex, activeIndex)
+      setTasks((prevTasks) => {
+        const activeTaskIndex = prevTasks.findIndex(
+          (task) => task.id === activeId
+        )
+        const updatedTasks = [...prevTasks]
+
+        updatedTasks[activeTaskIndex] = {
+          ...updatedTasks[activeTaskIndex],
+          columnId: String(overId),
+        }
+
+        return updatedTasks
+      })
     }
   }
 
@@ -181,9 +228,10 @@ const KanbanBoard = () => {
 
   return (
     <div className="w-full min-h-screen ">
-      <div className="w-full bg-background sticky top-0">
+      <div className="w-full bg-background sticky top-0 z-50">
         <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto">
           <h1 className="text-primary text-3xl font-bold">Kanban Board</h1>
+
           <button
             className="text-background bg-primary px-4 py-2 rounded-md border-[1px] border-primary ring-primary/80 hover:ring-2"
             onClick={createNewColumn}
@@ -192,22 +240,60 @@ const KanbanBoard = () => {
           </button>
         </div>
       </div>
+      <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto">
+        <div className="flex gap-2 items-center border-[1px] border-gray-400 rounded-md bg-background p-2 text-foreground">
+          <Search />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Search tasks..."
+            className="rounded-md outline-none bg-background"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")}>
+              <X />
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4 text-foreground">
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="border-[1px] border-gray-400 rounded-md bg-background outline-none p-2"
+          >
+            <option value="">Sort Board By</option>
+            <option value="AtoZ">Column Name: A to Z</option>
+            <option value="ZtoA">Column Name: Z to A</option>
+            <option value="TaskHighToLow">Task Count: High to Low</option>
+            <option value="TaskLowToHigh">Task Count: Low to High</option>
+          </select>
+        </div>
+      </div>
+      <div className="max-w-7xl px-4 py-4 flex justify-between mx-auto">
+        <h4 className="text-xl font-semibold text-foreground">
+          {searchQuery ? `Search results for "${searchQuery}"` : "Your Board"}
+        </h4>
+      </div>
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
       >
-        <div className="mx-auto grid grid-cols-2 max-w-7xl px-4 py-4 gap-8 md:grid-cols-3">
+        <div className="mx-auto grid grid-cols-2 max-w-7xl px-4 py-4 gap-8 md:grid-cols-4">
           <SortableContext items={columnsId}>
-            {columns.map((column) => (
+            {sortedColumns.map((column) => (
               <div key={column.id}>
                 <Column
                   column={column}
                   deleteColumn={deleteColumn}
                   updateColumn={updateColumn}
                   createTask={createTask}
-                  tasks={tasks.filter((task) => task.columnId === column.id)}
+                  tasks={filteredTasks.filter(
+                    (task) => task.columnId === column.id
+                  )}
                   deleteTask={deleteTask}
                   updateTask={updateTask}
                 />
